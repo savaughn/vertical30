@@ -2,7 +2,8 @@
 
 void draw_enemy(int x, int y, bool hit, bool draw_debug)
 {
-    DrawRectangle(x - 20, y - 20, 40, 40, hit ? RED : BLUE);
+    // DrawRectangle(x - 20, y - 20, 40, 40, hit ? RED : BLUE);
+    DrawRectangleLines(x - 20, y - 20, 40, 40, hit ? RED : BLUE);
     if (draw_debug)
     {
         DrawCircleLines(x, y, 24, LIME);

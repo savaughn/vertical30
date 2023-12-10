@@ -1,9 +1,10 @@
 #include <math.h>
 #include "player.h"
 
-void draw_player(Texture2D *texture, int x, int y, bool draw_debug)
+void draw_player(int x, int y, bool draw_debug)
 {
-    DrawTriangle((Vector2){x, y - 20}, (Vector2){x - 20, y + 20}, (Vector2){x + 20, y + 20}, LIGHTGRAY);
+    // DrawTriangle((Vector2){x, y - 20}, (Vector2){x - 20, y + 20}, (Vector2){x + 20, y + 20}, LIGHTGRAY);
+    DrawTriangleLines((Vector2){x, y - 20}, (Vector2){x - 20, y + 20}, (Vector2){x + 20, y + 20}, LIME);
     if (draw_debug)
     {
         DrawCircleLines(x, y, 12, RED);

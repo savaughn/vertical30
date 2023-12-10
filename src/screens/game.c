@@ -5,8 +5,6 @@
 #include "bullet.h"
 #include "pause.h"
 
-static Texture2D background_texture;
-static Texture2D player_texture;
 static Camera2D camera;
 static struct player player;
 static struct bullet player_bullets[MAX_BULLETS];
@@ -15,15 +13,9 @@ static int player_bullet_count = 0;
 
 static bool is_level_initialized = false;
 
-void unload_game_screen(void)
-{
-    UnloadTexture(background_texture);
-    UnloadTexture(player_texture);
-}
-
 void init_renderer(RenderTexture2D *target, Shader *shader, float *resize_scale)
 {
-    load_shaders_and_textures(target, shader, &background_texture, &player_texture, resize_scale);
+    load_shaders_and_textures(target, shader, resize_scale);
     camera = (Camera2D){.offset = {0, 0}, .target = {0, 0}, .rotation = 0.0f, .zoom = 1.0f};
 }
 
@@ -61,10 +53,7 @@ void draw_game_screen(struct opts *opts, int *selectedWidth, int *selectedHeight
 
     BeginTextureMode(*target);
     BeginMode2D(camera);
-    ClearBackground(DARKGRAY);
-
-    // Draw Background
-    DrawTexture(background_texture, -1, -1, WHITE);
+    ClearBackground(BLACK);
 
     // Update and draw player bullets
     for (int i = 0; i < MAX_BULLETS; i++)
@@ -87,7 +76,7 @@ void draw_game_screen(struct opts *opts, int *selectedWidth, int *selectedHeight
         }
     }
 
-    draw_player(&player_texture, player.position.x, player.position.y, opts->draw_debug);
+    draw_player(player.position.x, player.position.y, opts->draw_debug);
 
     for (int i = 0; i < MAX_ENEMIES; i++)
     {

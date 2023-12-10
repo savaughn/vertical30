@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "scan_frag.h"
 #include <stdio.h>
 
 void init_game(struct player *player, struct bullet *bullets, struct enemy *enemies)
@@ -23,18 +24,16 @@ void init_game(struct player *player, struct bullet *bullets, struct enemy *enem
     }
 }
 
-void load_shaders_and_textures(RenderTexture2D *target, Shader *shader, Texture2D *background_texture, Texture2D *player_texture, float *resize)
+void load_shaders_and_textures(RenderTexture2D *target, Shader *shader, float *resize)
 {
     *target = LoadRenderTexture(RENDER_WIDTH, RENDER_HEIGHT);
     SetTextureFilter(target->texture, TEXTURE_FILTER_ANISOTROPIC_16X);
     
-    *shader = LoadShader(0, "resources/shaders/scan.frag");
+    *shader = LoadShaderFromMemory(NULL, (const char*)scan_frag);
     *resize = 1.3f;
     SetShaderValue(*shader, GetShaderLocation(*shader, "resize"), resize, SHADER_UNIFORM_FLOAT);
     float resf = (float)RENDER_WIDTH;
     SetShaderValue(*shader, GetShaderLocation(*shader, "resolution"), &resf, SHADER_UNIFORM_FLOAT);
-
-    *background_texture = LoadTextureFromImage(LoadImage("resources/assets/space_black.png"));
 }
 
 void handle_opts_input(int *selectedWidth, int *selectedHeight, float *resize, Shader *shader, struct opts *opts, enum screen *current_screen)

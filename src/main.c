@@ -39,7 +39,6 @@ int main(void)
     }
     UnloadRenderTexture(target);
     UnloadShader(shader);
-    unload_game_screen();
     CloseWindow();
 
     return 0;
