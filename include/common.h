@@ -21,6 +21,11 @@ enum player_action
     SHOOT
 };
 
+enum enemy_type
+{
+    BASIC
+};
+
 struct enemy
 {
     Vector2 position;
@@ -28,6 +33,15 @@ struct enemy
     bool active;
     uint8 health;
     bool hit;
+    enum enemy_type type;
+};
+
+static struct enemy basic_enemy = {
+    .position = (Vector2){0, 0},
+    .speed = 96.0f,
+    .active = false,
+    .health = 1,
+    .type = BASIC
 };
 
 struct player

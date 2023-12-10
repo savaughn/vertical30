@@ -2,7 +2,7 @@
 
 void draw_bullet(int x, int y, bool draw_debug)
 {
-    DrawCircle(x, y, 5, RED);
+    DrawCircle(x, y, 4, RED);
     if (draw_debug)
     {
         DrawCircleLines(x, y, 5, LIME);

@@ -7,9 +7,10 @@ int main(void)
 {
     static RenderTexture2D target;
     static Shader shader;
-    struct opts opts = {.is_paused = false, .draw_debug = false, .show_shader = true, .show_device_scale = false};
     static float resize_scale;
 
+    struct opts opts = {.is_paused = false, .draw_debug = false, .show_shader = true, .show_device_scale = false};
+    Camera2D camera;
     int selectedWidth = 720;
     int selectedHeight = 720;
     enum screen current_screen = GAME;
@@ -17,7 +18,7 @@ int main(void)
     InitWindow(RENDER_WIDTH, RENDER_HEIGHT, "Vertical");
     SetTargetFPS(MAX_FPS);
 
-    init_renderer(&target, &shader, &resize_scale);
+    init_renderer(&target, &shader, &resize_scale, &camera);
 
     while (!WindowShouldClose())
     {
@@ -30,7 +31,7 @@ int main(void)
             break;
         case GAME:
         {
-            draw_game_screen(&opts, &selectedWidth, &selectedHeight, &current_screen, &target, &shader);
+            draw_game_screen(&opts, &selectedWidth, &selectedHeight, &target, &shader, &camera);
             break;
         }
         default:

@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-void init_renderer(RenderTexture2D *target, Shader *shader, float *resize_scale);
-void draw_game_screen(struct opts *opts, int *selectedWidth, int *selectedHeight, enum screen *current_screen, RenderTexture2D *target, Shader *shader);
+void init_game(void);
+void draw_game_screen(const struct opts *opts, const int *selectedWidth, const int *selectedHeight, const RenderTexture2D *target, const Shader *shader, const Camera2D *camera);
 
 #endif // GAME_H

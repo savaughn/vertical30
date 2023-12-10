@@ -2,27 +2,12 @@
 #include "scan_frag.h"
 #include <stdio.h>
 
-void init_game(struct player *player, struct bullet *bullets, struct enemy *enemies)
+void init_renderer(RenderTexture2D *target, Shader *shader, float *resize_scale, Camera2D *camera)
 {
-    player->position = (Vector2){360, 650};
-    player->speed = 300.0f; // Adjusted speed for smooth movement
-    player->action = NONE;
-    player->score = 0;
-    player->velocity = (Vector2){0, 0};
-
-    // bullet array
-    for (int i = 0; i < MAX_BULLETS; i++)
-    {
-        bullets[i] = (struct bullet){.active = false}; // initialize all bullets to inactive
-    }
-
-    // enemy array
-    const uint8 pixel_width = 8;
-    for (int i = 0; i < MAX_ENEMIES; i++)
-    {
-        enemies[i] = (struct enemy){.position = {(12 + pixel_width*i) * pixel_width, -GetRandomValue(0,400) * pixel_width}, .speed = 12.0f * pixel_width, .active = true, .health = 3};
-    }
+    load_shaders_and_textures(target, shader, resize_scale);
+    *camera = (Camera2D){.offset = {0, 0}, .target = {0, 0}, .rotation = 0.0f, .zoom = 1.0f};
 }
+
 
 void load_shaders_and_textures(RenderTexture2D *target, Shader *shader, float *resize)
 {

@@ -5,25 +5,37 @@
 #include "bullet.h"
 #include "pause.h"
 
-static Camera2D camera;
 static struct player player;
 static struct bullet player_bullets[MAX_BULLETS];
 static struct enemy enemies[MAX_ENEMIES];
 static int player_bullet_count = 0;
-
 static bool is_level_initialized = false;
 
-void init_renderer(RenderTexture2D *target, Shader *shader, float *resize_scale)
+void init_game(void)
 {
-    load_shaders_and_textures(target, shader, resize_scale);
-    camera = (Camera2D){.offset = {0, 0}, .target = {0, 0}, .rotation = 0.0f, .zoom = 1.0f};
+    player.position = (Vector2){360, 650};
+    player.speed = 300.0f; // Adjusted speed for smooth movement
+    player.action = NONE;
+    player.score = 0;
+    player.velocity = (Vector2){0, 0};
+
+    // bullet array
+    for (int i = 0; i < MAX_BULLETS; i++)
+    {
+        player_bullets[i] = (struct bullet){.active = false}; // initialize all bullets to inactive
+    }
+
+    for (int i = 0; i < MAX_ENEMIES; i++)
+    {
+        init_enemy(&enemies[i]);
+    }
 }
 
-void draw_game_screen(struct opts *opts, int *selectedWidth, int *selectedHeight, enum screen *current_screen, RenderTexture2D *target, Shader *shader)
+void draw_game_screen(const struct opts *opts, const int *selectedWidth, const int *selectedHeight, const RenderTexture2D *target, const Shader *shader, const Camera2D *camera)
 {
     if (!is_level_initialized)
     {
-        init_game(&player, player_bullets, enemies);
+        init_game();
         is_level_initialized = true;
     }
 
@@ -52,7 +64,7 @@ void draw_game_screen(struct opts *opts, int *selectedWidth, int *selectedHeight
     ClearBackground(BLACK);
 
     BeginTextureMode(*target);
-    BeginMode2D(camera);
+    BeginMode2D(*camera);
     ClearBackground(BLACK);
 
     // Update and draw player bullets
@@ -88,7 +100,7 @@ void draw_game_screen(struct opts *opts, int *selectedWidth, int *selectedHeight
             {
                 enemies[i].active = false;
             }
-            draw_enemy(enemies[i].position.x, enemies[i].position.y, enemies[i].hit, opts->draw_debug);
+            draw_enemy(enemies[i].position.x, enemies[i].position.y, enemies[i].hit, opts->draw_debug, enemies[i].type);
             if (CheckCollisionCircles(player.position, 12, enemies[i].position, 24))
             {
                 enemies[i].active = false;
@@ -99,11 +111,7 @@ void draw_game_screen(struct opts *opts, int *selectedWidth, int *selectedHeight
         }
         else
         {
-            enemies[i].position.y = -1000;
-            enemies[i].active = true;
-            enemies[i].health = 3;
-            enemies[i].hit = false;
-            enemies[i].speed = 12.0f * 8;
+            init_enemy(&enemies[i]);
         }
 
         enemies[i].hit = false;
