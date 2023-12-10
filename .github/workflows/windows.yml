@@ -1,0 +1,44 @@
+name: Build Windows
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_windows:
+    # if: false  # This workflow is disabled
+    runs-on: windows-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Checkout raylib
+      uses: actions/checkout@v2
+      with:
+        repository: raysan5/raylib
+        path: libs/raylib
+    
+    - name: Build raylib
+      run: |
+        cd libs/raylib/src
+        make PLATFORM=PLATFORM_DESKTOP
+        cp libraylib.a ../libraylib.a
+        mkdir -p ../include/
+        cp raylib.h ../include/
+        cp raymath.h ../include/
+        cp rlgl.h ../include/
+        cd ../../..
+
+    - name: Build Project
+      run: |
+        make
+            
+    - name: Publish Build Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: "vertical-artifacts-windows"
+        path: build/

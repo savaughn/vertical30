@@ -35,7 +35,6 @@ void load_shaders_and_textures(RenderTexture2D *target, Shader *shader, Texture2
     SetShaderValue(*shader, GetShaderLocation(*shader, "resolution"), &resf, SHADER_UNIFORM_FLOAT);
 
     *background_texture = LoadTextureFromImage(LoadImage("resources/assets/space_black.png"));
-    *player_texture = LoadTextureFromImage(LoadImage("resources/assets/player_ship.png"));
 }
 
 void handle_opts_input(int *selectedWidth, int *selectedHeight, float *resize, Shader *shader, struct opts *opts, enum screen *current_screen)
