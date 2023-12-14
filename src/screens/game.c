@@ -5,29 +5,31 @@
 #include "bullet.h"
 #include "pause.h"
 
-static struct player player;
-static struct bullet player_bullets[MAX_BULLETS];
-static struct enemy enemies[MAX_ENEMIES];
-static int player_bullet_count = 0;
+#include <stdio.h>
+
+static struct player player = {
+    .position = (Vector2){360, 650},
+    .speed = 300.0f,
+    .action = NONE,
+    .score = 0,
+    .velocity = (Vector2){0, 0},
+    .bullet_count = 0,
+    .hitbox_r = 12,
+};
+static struct enemy enemies[200];
+static int enemy_count = 0;
 static bool is_level_initialized = false;
+static int frame_count = 0;
 
 void init_game(void)
 {
-    player.position = (Vector2){360, 650};
-    player.speed = 300.0f; // Adjusted speed for smooth movement
-    player.action = NONE;
-    player.score = 0;
-    player.velocity = (Vector2){0, 0};
-
-    // bullet array
     for (int i = 0; i < MAX_BULLETS; i++)
     {
-        player_bullets[i] = (struct bullet){.active = false}; // initialize all bullets to inactive
-    }
-
-    for (int i = 0; i < MAX_ENEMIES; i++)
-    {
-        init_enemy(&enemies[i]);
+        player.bullets[i] = (struct bullet){
+            .active = false,
+            .speed = 800.0f,
+            .position = (Vector2){0, 0},
+            .hitbox_r = 12};
     }
 }
 
@@ -46,19 +48,6 @@ void draw_game_screen(const struct opts *opts, const int *selectedWidth, const i
     update_player_position(&player.position, &player.velocity, delta_time);
     update_player_action(&player);
 
-    if (player.action == SHOOT)
-    {
-        struct bullet bullet = {
-            .position = {player.position.x, player.position.y},
-            .speed = 800.0f, // Adjusted bullet speed for smooth movement
-            .active = true,
-            .player = &player};
-
-        player_bullets[player_bullet_count] = bullet;
-        player_bullet_count++;
-        player_bullet_count %= MAX_BULLETS;
-    }
-
     // Draw
     BeginDrawing();
     ClearBackground(BLACK);
@@ -67,51 +56,31 @@ void draw_game_screen(const struct opts *opts, const int *selectedWidth, const i
     BeginMode2D(*camera);
     ClearBackground(BLACK);
 
-    // Update and draw player bullets
+    int active_bullet_count = 0;
     for (int i = 0; i < MAX_BULLETS; i++)
     {
-        if (player_bullets[i].active)
+        if (player.bullets[i].active)
         {
-            update_bullet_position(&player_bullets[i].position, player_bullets[i].speed, delta_time);
-            for (int j = 0; j < MAX_ENEMIES; j++)
-            {
-                if (enemies[j].active)
-                {
-                    check_bullet_collision(&player_bullets[i], &enemies[j]);
-                }
-            }
-            if (player_bullets[i].position.y < 0)
-            {
-                player_bullets[i].active = false;
-            }
-            draw_bullet(player_bullets[i].position.x, player_bullets[i].position.y, opts->draw_debug);
+            update_bullet_position(&player.bullets[i], delta_time);
+            draw_bullet(player.bullets[i].position.x, player.bullets[i].position.y, opts->draw_debug);
+            active_bullet_count++;
         }
     }
 
     draw_player(player.position.x, player.position.y, opts->draw_debug);
 
-    for (int i = 0; i < MAX_ENEMIES; i++)
+    for (int i = 0; i < enemy_count; i++)
     {
         // if active
         if (enemies[i].active)
         {
-            update_enemy_position(&enemies[i].position, enemies[i].speed, delta_time);
+            update_enemy_position(&enemies[i], delta_time);
             if (enemies[i].position.y > 750)
             {
                 enemies[i].active = false;
             }
             draw_enemy(enemies[i].position.x, enemies[i].position.y, enemies[i].hit, opts->draw_debug, enemies[i].type);
-            if (CheckCollisionCircles(player.position, 12, enemies[i].position, 24))
-            {
-                enemies[i].active = false;
-                player.position.y += 10;
-            }
-            if (enemies[i].hit)
-                enemies[i].position.y += 3;
-        }
-        else
-        {
-            init_enemy(&enemies[i]);
+            check_collisions(&player, &enemies[i], camera);
         }
 
         enemies[i].hit = false;
@@ -149,4 +118,17 @@ void draw_game_screen(const struct opts *opts, const int *selectedWidth, const i
     }
 
     EndDrawing();
+
+    if (frame_count < MAX_FRAMES_LEVEL1)
+    {
+        struct enemy *enemy_spawn = level1SpawnScript[frame_count];
+        if (enemy_spawn->active)
+        {
+            enemies[enemy_count] = *enemy_spawn;
+            enemies[enemy_count].active = true;
+            enemy_count++;
+        }
+        frame_count++;
+        // frame_count %= MAX_FRAMES_LEVEL1;
+    }
 }

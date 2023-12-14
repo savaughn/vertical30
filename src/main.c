@@ -9,7 +9,7 @@ int main(void)
     static Shader shader;
     static float resize_scale;
 
-    struct opts opts = {.is_paused = false, .draw_debug = false, .show_shader = true, .show_device_scale = false};
+    struct opts opts = {.is_paused = false, .draw_debug = false, .show_shader = false, .show_device_scale = false};
     Camera2D camera;
     int selectedWidth = 720;
     int selectedHeight = 720;

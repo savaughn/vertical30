@@ -1,6 +1,5 @@
 #include "utils.h"
 #include "scan_frag.h"
-#include <stdio.h>
 
 void init_renderer(RenderTexture2D *target, Shader *shader, float *resize_scale, Camera2D *camera)
 {
@@ -26,8 +25,8 @@ void handle_opts_input(int *selectedWidth, int *selectedHeight, float *resize, S
     if (IsKeyPressed(KEY_ONE))
     {
         opts->is_paused = !opts->is_paused;
-        printf("Paused %s\n", opts->is_paused ? "true" : "false");    }
         *current_screen = opts->is_paused ? PAUSE : GAME;
+    }
     if (IsKeyPressed(KEY_TWO))
     {
         opts->show_shader = !opts->show_shader;
@@ -44,5 +43,29 @@ void handle_opts_input(int *selectedWidth, int *selectedHeight, float *resize, S
     if (IsKeyPressed(KEY_FOUR))
     {
         opts->draw_debug = !opts->draw_debug;
+    }
+}
+
+void check_collisions(struct player *player, struct enemy *enemy, Camera2D *camera)
+{
+    for (int i = 0; i < MAX_BULLETS; i++)
+    {
+        if (player->bullets[i].active)
+        {
+            if (CheckCollisionCircles(player->bullets[i].position, 12, enemy->position, 24))
+            {
+                enemy->health--;
+                if (enemy->health <= 0)
+                {
+                    enemy->active = false;
+                    player->score += 100;
+                }
+                player->bullets[i].active = false;
+            }
+        }
+    }
+    if (CheckCollisionCircles(player->position, player->hitbox_r, enemy->position, enemy->hitbox_r))
+    {
+        player->position.y += 10;
     }
 }

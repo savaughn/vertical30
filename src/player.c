@@ -4,6 +4,7 @@
 void draw_player(int x, int y, bool draw_debug)
 {
     // DrawTriangle((Vector2){x, y - 20}, (Vector2){x - 20, y + 20}, (Vector2){x + 20, y + 20}, LIGHTGRAY);
+    DrawTriangle((Vector2){x, y - 20}, (Vector2){x - 20, y + 20}, (Vector2){x + 20, y + 20}, BLACK);
     DrawTriangleLines((Vector2){x, y - 20}, (Vector2){x - 20, y + 20}, (Vector2){x + 20, y + 20}, LIME);
     if (draw_debug)
     {
@@ -15,7 +16,17 @@ void update_player_action(struct player *player)
 {
     if (IsKeyPressed(KEY_SPACE))
     {
-        player->action = SHOOT;
+        if (player->bullet_count >= MAX_BULLETS)
+        {
+            return;
+        }
+        player->bullets[player->bullet_count] = (struct bullet){
+            .position = (Vector2){player->position.x, player->position.y},
+            .active = true,
+            .speed = common_bullet.speed,
+            .hitbox_r = common_bullet.hitbox_r};
+        player->bullet_count++;
+        player->bullet_count %= MAX_BULLETS;
     }
     else
     {

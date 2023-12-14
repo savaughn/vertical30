@@ -9,6 +9,7 @@ void init_enemy(struct enemy *enemy)
 
 void draw_basic_enemy(int x, int y, bool hit, bool draw_debug)
 {
+    DrawRectangle(x - 20, y - 20, 40, 40, BLACK);
     DrawRectangleLines(x - 20, y - 20, 40, 40, hit ? RED : BLUE);
     if (draw_debug)
     {
@@ -28,7 +29,11 @@ void draw_enemy(int x, int y, bool hit, bool draw_debug, enum enemy_type type)
     }
 }
 
-void update_enemy_position(Vector2 *pos, const float speed, const float delta_time)
+void update_enemy_position(struct enemy *enemy, const float delta_time)
 {
-    pos->y += speed * delta_time;
+    enemy->position.y += enemy->speed * delta_time;
+    if (enemy->hit)
+    {
+        enemy->position.y += 3;
+    }
 }
