@@ -14,7 +14,11 @@ void draw_player(int x, int y, bool draw_debug)
 
 void update_player_action(struct player *player)
 {
+#ifdef __rgb30__
+    if (is_button_pressed(RGB30_BUTTON_RIGHT_FACE_RIGHT))
+#else
     if (IsKeyPressed(KEY_SPACE))
+#endif
     {
         if (player->bullet_count >= MAX_BULLETS)
         {
@@ -41,26 +45,47 @@ const float max_speed = 400.0f;
 void update_player_position(Vector2 *pos, Vector2 *velocity, const float delta_time)
 {
     // Handle acceleration
+#ifdef __rgb30__
+    if (IsGamepadButtonDown(0, RGB30_BUTTON_LEFT_FACE_UP))
+#else
     if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP))
+#endif
     {
         velocity->y -= acceleration * delta_time;
     }
+#ifdef __rgb30__
+    if (IsGamepadButtonDown(0, RGB30_BUTTON_LEFT_FACE_LEFT))
+#else
     if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT))
+#endif
     {
         velocity->x -= acceleration * delta_time;
     }
+#ifdef __rgb30__
+    if (IsGamepadButtonDown(0, RGB30_BUTTON_LEFT_FACE_DOWN))
+#else
     if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN))
+#endif
     {
         velocity->y += acceleration * delta_time;
     }
+#ifdef __rgb30__
+    if (IsGamepadButtonDown(0, RGB30_BUTTON_LEFT_FACE_RIGHT))
+#else
     if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT))
+#endif
     {
         velocity->x += acceleration * delta_time;
     }
 
     // Deceleration
+#ifdef __rgb30__
+    if (!IsGamepadButtonDown(0, RGB30_BUTTON_LEFT_FACE_UP) && !IsGamepadButtonDown(0, RGB30_BUTTON_LEFT_FACE_LEFT) &&
+        !IsGamepadButtonDown(0, RGB30_BUTTON_LEFT_FACE_DOWN) && !IsGamepadButtonDown(0, RGB30_BUTTON_LEFT_FACE_RIGHT))
+#else
     if (!IsKeyDown(KEY_W) && !IsKeyDown(KEY_UP) && !IsKeyDown(KEY_A) && !IsKeyDown(KEY_LEFT) &&
         !IsKeyDown(KEY_S) && !IsKeyDown(KEY_DOWN) && !IsKeyDown(KEY_D) && !IsKeyDown(KEY_RIGHT))
+#endif
     {
         // If no keys are pressed, apply deceleration
         velocity->x *= deceleration;

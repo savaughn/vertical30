@@ -220,7 +220,10 @@ ifeq ($(PLATFORM),PLATFORM_RPI)
     CFLAGS += -std=gnu99
 endif
 ifeq ($(PLATFORM),PLATFORM_DRM)
-    CFLAGS += -std=gnu99 -DEGL_NO_X11
+	CFLAGS += -std=gnu99 -DEGL_NO_X11
+	ifeq ($(DEVICE),RGB30)
+		CFLAGS += -D__rgb30__
+	endif
 endif
 
 CFLAGS += -DPROJECT_VERSION=\"$(PROJECT_VERSION)\" -DPROJECT_VERSION_TYPE=\"$(PROJECT_VERSION_TYPE)\"
@@ -382,7 +385,12 @@ OBJ = obj
 $(shell mkdir -p $(OBJ))
 $(shell mkdir -p $(OBJ)/screens)
 $(shell mkdir -p $(OBJ)/components)
+$(shell mkdir -p $(OBJ)/rgb30)
 PROJECT_SOURCE_FILES := $(wildcard $(SOURCE)/*.c $(SOURCE)/screens/*.c $(SOURCE)/components/*.c)
+
+ifeq ($(DEVICE),RGB30)
+    PROJECT_SOURCE_FILES += $(wildcard $(SOURCE)/rgb30/*.c)
+endif
 
 INCLUDE_PATHS += -I$(INCLUDE)
 
@@ -419,6 +427,10 @@ ifeq ($(filter launch,$(MAKECMDGOALS)),launch)
 	$(MAKE) $(MAKEFILE_PARAMS) -s -B && ./build/$(PROJECT_NAME) $(EXT)
 endif
 
+rgb30:
+	@mkdir -p build
+	@$(MAKE) PLATFORM=PLATFORM_DRM DEVICE=RGB30 -s -B
+
     # Project target defined by PROJECT_NAME
 $(PROJECT_NAME): $(OBJS)
 	@echo "Building $(PROJECT_NAME)..."
@@ -441,3 +453,6 @@ check:
 # Clean build folder
 clean-build:
 	@rm -rf build
+
+send:
+	sshpass -p $${SSH_PASSWORD} scp ./build/verticalshooter root@$${SSH_LOCAL_IP}:/roms/ports/Vertical30/verticalshooter

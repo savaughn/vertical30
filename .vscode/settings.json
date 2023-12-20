@@ -55,6 +55,7 @@
 		"typeinfo": "c",
 		"unordered_map": "c",
 		"variant": "c",
-		"common.h": "c"
+		"common.h": "c",
+		"player.h": "c"
 	}
 }

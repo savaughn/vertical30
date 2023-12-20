@@ -2,6 +2,9 @@
 #include "pause.h"
 #include "utils.h"
 #include "game.h"
+#ifdef __rgb30__
+#include "rgb30_controller.h"
+#endif
 
 int main(void)
 {
@@ -17,10 +20,17 @@ int main(void)
 
     InitWindow(RENDER_WIDTH, RENDER_HEIGHT, "Vertical");
     SetTargetFPS(MAX_FPS);
+#ifdef __rgb30__
+    SetExitKey(RGB30_BUTTON_MIDDLE_RIGHT);
+#endif
 
     init_renderer(&target, &shader, &resize_scale, &camera);
-
+#ifdef __rgb30__
+    bool should_close = false;
+    while (!should_close)
+#else
     while (!WindowShouldClose())
+#endif
     {
         handle_opts_input(&selectedWidth, &selectedHeight, &resize_scale, &shader, &opts, &current_screen);
 
@@ -37,6 +47,13 @@ int main(void)
         default:
             break;
         }
+#ifdef __rgb30__
+        if (IsGamepadButtonDown(0, RGB30_BUTTON_MIDDLE_RIGHT) && IsGamepadButtonDown(0, RGB30_BUTTON_MIDDLE_LEFT))
+        {
+            should_close = true;
+        }
+        refresh_button_state();
+#endif
     }
     UnloadRenderTexture(target);
     UnloadShader(shader);
