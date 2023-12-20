@@ -21,6 +21,8 @@ static int enemy_count = 0;
 static bool is_level_initialized = false;
 static int frame_count = 0;
 
+static struct enemy *level1SpawnScript[MAX_FRAMES_LEVEL1];
+
 void init_game(void)
 {
     for (int i = 0; i < MAX_BULLETS; i++)
@@ -30,6 +32,22 @@ void init_game(void)
             .speed = 800.0f,
             .position = (Vector2){0, 0},
             .hitbox_r = 12};
+    }
+    for (int i = 0; i < MAX_FRAMES_LEVEL1; i++)
+    {
+        level1SpawnScript[i] = &(struct enemy){.active = false};
+        if (i == 60)
+        {
+            level1SpawnScript[i] = &(struct enemy){.position = (Vector2){100, -100}, .type = BASIC, .speed = 96.0f, .active = true, .health = 1};
+        }
+        if (i == 120)
+        {
+            level1SpawnScript[i] = &(struct enemy){.position = (Vector2){200, -200}, .type = BASIC, .speed = 96.0f, .active = true, .health = 1};
+        }
+        if (i == 180)
+        {
+            level1SpawnScript[i] = &(struct enemy){.position = (Vector2){300, -300}, .type = BASIC, .speed = 96.0f, .active = true, .health = 1};
+        }
     }
 }
 

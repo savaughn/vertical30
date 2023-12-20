@@ -16,6 +16,8 @@
 
 #define MAX_FRAMES_LEVEL1 200
 
+typedef unsigned char uint8;
+
 enum player_action
 {
     NONE = -1,
@@ -32,10 +34,10 @@ struct enemy
     Vector2 position;
     float speed;
     bool active;
-    u_int8_t health;
+    uint8 health;
     bool hit;
     enum enemy_type type;
-    u_int8_t hitbox_r;
+    uint8 hitbox_r;
 };
 
 static struct enemy basic_enemy = {
@@ -64,7 +66,7 @@ struct player
     Vector2 velocity;
     int bullet_count;
     struct bullet bullets[MAX_BULLETS];
-    u_int8_t hitbox_r;
+    uint8 hitbox_r;
 };
 
 struct opts
@@ -85,13 +87,6 @@ struct enemy_spawn_info
 {
     Vector2 spawn_position;
     enum enemy_type type;
-};
-
-static struct enemy *level1SpawnScript[MAX_FRAMES_LEVEL1] = {
-    [0 ... 199] = &(struct enemy){.active = false},
-    [60] = &(struct enemy){.position = (Vector2){100, -100}, .type = BASIC, .speed = 96.0f, .active = true, .health = 1},
-    [120] = &(struct enemy){.position = (Vector2){200, -200}, .type = BASIC, .speed = 96.0f, .active = true, .health = 1},
-    [180] = &(struct enemy){.position = (Vector2){300, -300}, .type = BASIC, .speed = 96.0f, .active = true, .health = 1},
 };
 
 static struct bullet common_bullet = {
