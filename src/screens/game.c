@@ -21,7 +21,7 @@ static int enemy_count = 0;
 static bool is_level_initialized = false;
 static int frame_count = 0;
 
-static struct enemy *level1SpawnScript[MAX_FRAMES_LEVEL1];
+static struct enemy level1SpawnScript[MAX_FRAMES_LEVEL1];
 
 void init_game(void)
 {
@@ -35,18 +35,18 @@ void init_game(void)
     }
     for (int i = 0; i < MAX_FRAMES_LEVEL1; i++)
     {
-        level1SpawnScript[i] = &(struct enemy){.active = false};
+        level1SpawnScript[i] = (struct enemy){.active = false};
         if (i == 60)
         {
-            level1SpawnScript[i] = &(struct enemy){.position = (Vector2){100, -100}, .type = BASIC, .speed = 96.0f, .active = true, .health = 1};
+            level1SpawnScript[i] = (struct enemy){.position = (Vector2){100, -100}, .type = BASIC, .speed = 96.0f, .active = true, .health = 1};
         }
         if (i == 120)
         {
-            level1SpawnScript[i] = &(struct enemy){.position = (Vector2){200, -200}, .type = BASIC, .speed = 96.0f, .active = true, .health = 1};
+            level1SpawnScript[i] = (struct enemy){.position = (Vector2){200, -200}, .type = BASIC, .speed = 96.0f, .active = true, .health = 1};
         }
         if (i == 180)
         {
-            level1SpawnScript[i] = &(struct enemy){.position = (Vector2){300, -300}, .type = BASIC, .speed = 96.0f, .active = true, .health = 1};
+            level1SpawnScript[i] = (struct enemy){.position = (Vector2){300, -300}, .type = BASIC, .speed = 96.0f, .active = true, .health = 1};
         }
     }
 }
@@ -139,11 +139,10 @@ void draw_game_screen(const struct opts *opts, const int *selectedWidth, const i
 
     if (frame_count < MAX_FRAMES_LEVEL1)
     {
-        struct enemy *enemy_spawn = level1SpawnScript[frame_count];
-        if (enemy_spawn->active)
+        struct enemy enemy_spawn = level1SpawnScript[frame_count];
+        if (enemy_spawn.active)
         {
-            enemies[enemy_count] = *enemy_spawn;
-            enemies[enemy_count].active = true;
+            enemies[enemy_count] = enemy_spawn;
             enemy_count++;
         }
         frame_count++;
