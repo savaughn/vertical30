@@ -1,0 +1,49 @@
+name: Build rgb30
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_linux:
+    if: false  # This workflow is disabled until self-hosted runners are available
+    runs-on: ubuntu-latest # needs arm64 support
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Checkout raylib
+      uses: actions/checkout@v3
+      with:
+        repository: raysan5/raylib
+        path: libs/raylib
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xorg-dev libdrm-dev libgbm-dev libgles2-mesa-dev
+    
+    - name: Build raylib
+      run: |
+        cd libs/raylib/src
+        make PLATFORM=PLATFORM_DRM
+        cp libraylib.a ../libraylib.a
+        mkdir -p ../include/
+        cp raylib.h ../include/
+        cp raymath.h ../include/
+        cp rlgl.h ../include/
+        cd ../../..
+
+    - name: Build Project
+      run: |
+        make rgb30
+            
+    - name: Publish Build Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: "vertical-artifacts-rgb30"
+        path: build/
