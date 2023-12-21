@@ -44,9 +44,16 @@ const float max_speed = 400.0f;
 
 void update_player_position(Vector2 *pos, Vector2 *velocity, const float delta_time)
 {
+    float axis_x = 0.0f;
+    float axis_y = 0.0f;
+#ifdef __rgb30__
+    axis_x = GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_X);
+    axis_y = GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_Y);
+#endif
+
     // Handle acceleration
 #ifdef __rgb30__
-    if (IsGamepadButtonDown(0, RGB30_BUTTON_LEFT_FACE_UP))
+    if (IsGamepadButtonDown(0, RGB30_BUTTON_LEFT_FACE_UP) || axis_y < -0.3f)
 #else
     if (IsKeyDown(KEY_W) || IsKeyDown(KEY_UP))
 #endif
@@ -54,7 +61,7 @@ void update_player_position(Vector2 *pos, Vector2 *velocity, const float delta_t
         velocity->y -= acceleration * delta_time;
     }
 #ifdef __rgb30__
-    if (IsGamepadButtonDown(0, RGB30_BUTTON_LEFT_FACE_LEFT))
+    if (IsGamepadButtonDown(0, RGB30_BUTTON_LEFT_FACE_LEFT) || axis_x < -0.3f)
 #else
     if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT))
 #endif
@@ -62,7 +69,7 @@ void update_player_position(Vector2 *pos, Vector2 *velocity, const float delta_t
         velocity->x -= acceleration * delta_time;
     }
 #ifdef __rgb30__
-    if (IsGamepadButtonDown(0, RGB30_BUTTON_LEFT_FACE_DOWN))
+    if (IsGamepadButtonDown(0, RGB30_BUTTON_LEFT_FACE_DOWN) || axis_y > 0.3f)
 #else
     if (IsKeyDown(KEY_S) || IsKeyDown(KEY_DOWN))
 #endif
@@ -70,7 +77,7 @@ void update_player_position(Vector2 *pos, Vector2 *velocity, const float delta_t
         velocity->y += acceleration * delta_time;
     }
 #ifdef __rgb30__
-    if (IsGamepadButtonDown(0, RGB30_BUTTON_LEFT_FACE_RIGHT))
+    if (IsGamepadButtonDown(0, RGB30_BUTTON_LEFT_FACE_RIGHT) || axis_x > 0.3f)
 #else
     if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT))
 #endif
