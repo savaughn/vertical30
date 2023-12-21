@@ -32,8 +32,11 @@ int main(void)
     while (!WindowShouldClose())
 #endif
     {
+#ifdef __rgb30__
+        update_button_state();
+#else
         handle_opts_input(&selectedWidth, &selectedHeight, &resize_scale, &shader, &opts, &current_screen);
-
+#endif
         switch (current_screen)
         {
         case PAUSE:

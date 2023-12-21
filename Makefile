@@ -455,4 +455,4 @@ clean-build:
 	@rm -rf build
 
 send:
-	sshpass -p $${SSH_PASSWORD} scp ./build/verticalshooter root@$${SSH_LOCAL_IP}:/roms/ports/Vertical30/verticalshooter
+	sshpass -p $${RGB30_SSH_PASSWORD} scp ./build/verticalshooter root@$${RGB30_SSH_LOCAL_IP}:/roms/ports/Vertical30/verticalshooter
